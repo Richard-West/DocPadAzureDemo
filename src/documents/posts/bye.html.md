@@ -1,7 +1,7 @@
 ```
-title: This is a Goodbye Blog Post
+title: This is another blog post
 layout: post
 tags: ['outro','post']
 ```
 
-This is a goodbye **blog post**
+I forgot to tell you that I made not one, but **two** great blog posts!

@@ -13,7 +13,7 @@ docpadConfig = {
 		# Specify some site properties
 		site:
 			# The production url of our website
-			url: "http://website.com"
+			url: "http://docpaddemo.azurewebsites.net/"
 
 			# Here are some old site urls that you would like to redirect from
 			oldUrls: [
@@ -22,7 +22,7 @@ docpadConfig = {
 			]
 
 			# The default title of our website
-			title: "Your Website"
+			title: "DocPad + Azure"
 
 			# The website description (for SEO)
 			description: """
@@ -35,7 +35,7 @@ docpadConfig = {
 				"""
 
 			# The website author's name
-			author: "Your Name"
+			author: "Richard West"
 
 			# The website author's email
 			email: "your@email.com"
@@ -43,6 +43,7 @@ docpadConfig = {
 			# Styles
 			styles: [
 				"/styles/twitter-bootstrap.css"
+				"/styles/bootstrap-simplex-theme.css"
 				"/styles/style.css"
 			]
 
