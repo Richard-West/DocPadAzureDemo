@@ -15,8 +15,8 @@ break within it.
 Here is an ordered list:
 
 1. This is one
-2. This is two
-3. And Three
+1. This is two
+1. And Three
 
 An unordered list:
 
