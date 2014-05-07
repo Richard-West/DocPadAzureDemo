@@ -93,7 +93,12 @@ call :SelectNodeVersion
 
 :: 2. Install npm packages
 echo Installing npm packages...
+echo Deployment Source Location:
+echo %DEPLOYMENT_SOURCE%
+echo Deployment Target Location:
+echo %DEPLOYMENT_TARGET%
 pushd "%DEPLOYMENT_SOURCE%"
+
 call !NPM_CMD! install --production
 IF !ERRORLEVEL! NEQ 0 goto error
 popd
