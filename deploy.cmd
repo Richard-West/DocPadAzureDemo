@@ -86,33 +86,29 @@ goto :EOF
 :: ----------
 
 :Deployment
-echo Handling node.js deployment.
+echo Handling DocPad deployment.
 
-
-
-:: 2. Select node version
+:: 1. Select node version
 call :SelectNodeVersion
 
-:: 3. Install npm packages
-IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
-  pushd "%DEPLOYMENT_TARGET%"
-  call :ExecuteCmd !NPM_CMD! install --production
-  IF !ERRORLEVEL! NEQ 0 goto error
-  popd
-)
+:: 2. Install npm packages
+echo Installing npm packages...
+pushd "%DEPLOYMENT_SOURCE%"
+call !NPM_CMD! install --production
+IF !ERRORLEVEL! NEQ 0 goto error
+popd
 
-:: 4. Build DocPad Site
+:: 3. Build DocPad Site
 echo Building the DocPad site
-pushd %DEPLOYMENT_TARGET%
-call  %DEPLOYMENT_TARGET%\node_modules\.bin\docpad.cmd generate
+pushd %DEPLOYMENT_SOURCE%
+:: del /s /q "%DEPLOYMENT_SOURCE%\out\"
+call  %DEPLOYMENT_SOURCE%\node_modules\.bin\docpad.cmd generate
 IF !ERRORLEVEL! NEQ 0 goto error
 
-:: 1. KuduSync
-echo KuduSync executing
-IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
-  call :ExecuteCmd "%KUDU_SYNC_CMD%" -v 50 -f "%DEPLOYMENT_SOURCE%" -t "%DEPLOYMENT_TARGET%" -n "%NEXT_MANIFEST_PATH%" -p "%PREVIOUS_MANIFEST_PATH%" -i ".git;.hg;.deployment;deploy.cmd"
-  IF !ERRORLEVEL! NEQ 0 goto error
-)
+:: 3. KuduSync
+echo Copying Files...
+call %KUDU_SYNC_CMD% -v 500 -f "%DEPLOYMENT_SOURCE%\out" -t "%DEPLOYMENT_TARGET%" -n "%NEXT_MANIFEST_PATH%" -p "%PREVIOUS_MANIFEST_PATH%"
+IF !ERRORLEVEL! NEQ 0 goto error
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
