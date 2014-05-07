@@ -94,6 +94,8 @@ popd
 
 :: 2. Build DocPad site
 echo Building DocPad site...
+echo Deployment Source Folder: %DEPLOYMENT_SOURCE%
+echo Deployment Target Folder: %DEPLOYMENT_TARGET%
 pushd "%DEPLOYMENT_SOURCE%"
 rd /s /q out
 IF !ERRORLEVEL! NEQ 0 goto error
