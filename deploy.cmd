@@ -101,7 +101,7 @@ popd
 :: 3. Build DocPad Site
 echo Building the DocPad site
 pushd %DEPLOYMENT_SOURCE%
-:: del /s /q "%DEPLOYMENT_SOURCE%\out\"
+del /s /q "%DEPLOYMENT_SOURCE%\out\"
 call  %DEPLOYMENT_SOURCE%\node_modules\.bin\docpad.cmd generate
 IF !ERRORLEVEL! NEQ 0 goto error
 
