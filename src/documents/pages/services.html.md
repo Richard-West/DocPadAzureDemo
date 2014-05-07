@@ -1,5 +1,5 @@
 ```
-title: This is an example
+title: Services
 layout: example
 tags: ['intro','page']
 pageOrder: 1

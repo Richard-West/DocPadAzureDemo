@@ -1,8 +1,8 @@
 ```
-title: This is a Page
+title: About Us
 layout: page
 tags: ['intro','page']
-pageOrder: 1
+pageOrder: 9
 ```
 
 This is a **page**
