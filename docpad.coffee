@@ -22,7 +22,7 @@ docpadConfig = {
 			]
 
 			# The default title of our website
-			title: "DocPad + Azure"
+			title: "DocPad + Azure Test Site"
 
 			# The website description (for SEO)
 			description: """

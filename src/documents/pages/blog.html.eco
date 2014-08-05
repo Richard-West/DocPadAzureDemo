@@ -1,5 +1,5 @@
 ---
-title: Blog
+title: My Blog Posts
 layout: page
 pageOrder: 2
 ---
@@ -7,7 +7,7 @@ pageOrder: 2
 <nav class="linklist">
 	<% for document in @getCollection('posts').toJSON(): %>
 		<li><span><%= document.date.toDateString() %></span>
-		&raquo;
+		&raquo; THis is some text
 		<a href="<%= document.url %>"><%= document.title %></a></li>
 	<% end %>
 </nav>
