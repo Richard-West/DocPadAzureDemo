@@ -2,7 +2,6 @@
 
 :: ----------------------
 :: KUDU Deployment Script
-:: Version: 0.1.10
 :: ----------------------
 
 :: Prerequisites
@@ -20,7 +19,7 @@ IF %ERRORLEVEL% NEQ 0 (
 
 setlocal enabledelayedexpansion
 
-SET ARTIFACTS=%~dp0%..\artifacts
+SET ARTIFACTS=%~dp0%artifacts
 
 IF NOT DEFINED DEPLOYMENT_SOURCE (
   SET DEPLOYMENT_SOURCE=%~dp0%.
@@ -45,7 +44,7 @@ IF NOT DEFINED KUDU_SYNC_CMD (
   IF !ERRORLEVEL! NEQ 0 goto error
 
   :: Locally just running "kuduSync" would also work
-  SET KUDU_SYNC_CMD=%appdata%\npm\kuduSync.cmd
+  SET KUDU_SYNC_CMD=node "%appdata%\npm\node_modules\kuduSync\bin\kuduSync"
 )
 goto Deployment
 
@@ -63,17 +62,12 @@ IF DEFINED KUDU_SELECT_NODE_VERSION_CMD (
     SET /p NODE_EXE=<"%DEPLOYMENT_TEMP%\__nodeVersion.tmp"
     IF !ERRORLEVEL! NEQ 0 goto error
   )
-  
-  IF EXIST "%DEPLOYMENT_TEMP%\__npmVersion.tmp" (
-    SET /p NPM_JS_PATH=<"%DEPLOYMENT_TEMP%\__npmVersion.tmp"
-    IF !ERRORLEVEL! NEQ 0 goto error
-  )
 
   IF NOT DEFINED NODE_EXE (
     SET NODE_EXE=node
   )
 
-  SET NPM_CMD="!NODE_EXE!" "!NPM_JS_PATH!"
+  SET NPM_CMD="!NODE_EXE!" "%NPM_JS_PATH%"
 ) ELSE (
   SET NPM_CMD=npm
   SET NODE_EXE=node
@@ -93,46 +87,32 @@ call :SelectNodeVersion
 
 :: 2. Install npm packages
 echo Installing npm packages...
-echo Deployment Source Location:
-echo %DEPLOYMENT_SOURCE%
-echo Deployment Target Location:
-echo %DEPLOYMENT_TARGET%
 pushd "%DEPLOYMENT_SOURCE%"
-
 call !NPM_CMD! install --production
 IF !ERRORLEVEL! NEQ 0 goto error
 popd
 
-:: 3. Build DocPad Site
-echo Building the DocPad site
-pushd %DEPLOYMENT_SOURCE%
-del /s /q "%DEPLOYMENT_SOURCE%\out\"
-call  %DEPLOYMENT_SOURCE%\node_modules\.bin\docpad.cmd generate
+:: 3. Build DocPad site
+echo Building DocPad site...
+echo Deployment Source Folder: %DEPLOYMENT_SOURCE%
+echo Deployment Target Folder: %DEPLOYMENT_TARGET%
+pushd "%DEPLOYMENT_SOURCE%"
+rd /s /q out
 IF !ERRORLEVEL! NEQ 0 goto error
+"!NODE_EXE!" .\node_modules\docpad\bin\docpad -e static generate
+IF !ERRORLEVEL! NEQ 0 goto error
+popd
 
-:: 3. KuduSync
+:: 4. KuduSync
 echo Copying Files...
 call %KUDU_SYNC_CMD% -v 500 -f "%DEPLOYMENT_SOURCE%\out" -t "%DEPLOYMENT_TARGET%" -n "%NEXT_MANIFEST_PATH%" -p "%PREVIOUS_MANIFEST_PATH%"
 IF !ERRORLEVEL! NEQ 0 goto error
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-:: Post deployment stub
-IF DEFINED POST_DEPLOYMENT_ACTION call "%POST_DEPLOYMENT_ACTION%"
-IF !ERRORLEVEL! NEQ 0 goto error
-
 goto end
 
-:: Execute command routine that will echo out when error
-:ExecuteCmd
-setlocal
-set _CMD_=%*
-call %_CMD_%
-if "%ERRORLEVEL%" NEQ "0" echo Failed exitCode=%ERRORLEVEL%, command=%_CMD_%
-exit /b %ERRORLEVEL%
-
 :error
-endlocal
 echo An error has occurred during web site deployment.
 call :exitSetErrorLevel
 call :exitFromFunction 2>nul
@@ -144,5 +124,4 @@ exit /b 1
 ()
 
 :end
-endlocal
 echo Finished successfully.

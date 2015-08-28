@@ -1,8 +1,8 @@
 ```
-title: This is an example
+title: Another Page
 layout: example
 tags: ['intro','page']
-pageOrder: 1
+pageOrder: 2
 ```
 
 
