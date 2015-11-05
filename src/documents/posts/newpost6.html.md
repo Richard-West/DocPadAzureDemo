@@ -1,5 +1,5 @@
 ```
-title: Another blog post
+title: Another blog post #6
 layout: post
 tags: ['intro','post']
 ```
